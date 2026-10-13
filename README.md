@@ -12,6 +12,18 @@ node server.js
 
 Open [http://127.0.0.1:4173](http://127.0.0.1:4173). Manual expense entry, filtering, editing, and CSV export work without Ollama.
 
+## Deploy a demo to Render
+
+Create a **Web Service** for this repository and use:
+
+- Language: `Node`
+- Branch: `main`
+- Build command: `npm install`
+- Start command: `npm start`
+- Environment variable: `HOST` = `0.0.0.0`
+
+Choose an available region and the Free instance for a demo. Leave `OLLAMA_URL` unset unless you have deliberately configured a protected, reachable Ollama service. A standard Render instance cannot reach Ollama running on your laptop, so receipt scanning will show as offline; manual entry and CSV export still work. Do not upload real or sensitive receipts to this public demo. Run the app locally with Ollama for private AI receipt processing.
+
 To enable photo scanning, install [Ollama](https://ollama.com/download), start it, then download an open vision model:
 
 ```sh

@@ -4,6 +4,7 @@ const path = require('node:path');
 
 const root = __dirname;
 const port = Number(process.env.PORT || 4173);
+const host = process.env.HOST || '127.0.0.1';
 const ollamaUrl = (process.env.OLLAMA_URL || 'http://127.0.0.1:11434').replace(/\/$/, '');
 const mimeTypes = {
   '.css': 'text/css; charset=utf-8',
@@ -130,6 +131,6 @@ const server = http.createServer(async (request, response) => {
   });
 });
 
-server.listen(port, '127.0.0.1', () => {
-  console.log(`Slipstream is running at http://127.0.0.1:${port}`);
+server.listen(port, host, () => {
+  console.log(`Slipstream is running at http://${host}:${port}`);
 });
