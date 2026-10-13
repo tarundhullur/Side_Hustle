@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f5ef">
+    <meta name="description" content="A private receipt inbox for independent work. Your receipts stay on your device, read by your own local AI.">
+    <title>Slipstream | Your private receipt desk</title>
+    <link rel="stylesheet" href="/app.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Slipstream home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>slipstream<span class="brand-period">.</span></span>
+      </a>
+      <div class="topbar-right">
+        <span class="privacy-label"><span class="privacy-dot"></span>No hosted AI API</span>
+        <button class="icon-button help-button" id="export-button" type="button" title="Export CSV" aria-label="Export CSV">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3" /></svg>
+        </button>
+        <button class="avatar" type="button" aria-label="Local workspace">LS</button>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="welcome-row">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-mark"></span> YOUR INDEPENDENT WORK, IN ORDER</p>
+          <h1>A little less <span>paperwork.</span></h1>
+          <p class="welcome-copy">Drop in a receipt. Get back to the work that pays.</p>
+        </div>
+        <div class="welcome-actions">
+          <button class="button button-quiet" id="new-expense-button" type="button">
+            <span class="plus-icon" aria-hidden="true">+</span> Add expense
+          </button>
+          <button class="button button-primary" id="upload-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 14v5h14v-5" /></svg>
+            Scan receipts
+          </button>
+        </div>
+      </section>
+
+      <section class="stats-row" aria-label="Expense summary">
+        <article class="stat-block stat-total">
+          <div class="stat-label">Spent this month <span class="month-label" id="month-label"></span></div>
+          <div class="stat-value" id="total-value">$0.00</div>
+          <div class="stat-foot"><span class="stat-indicator"></span> Your business spend, at a glance</div>
+        </article>
+        <article class="stat-block">
+          <div class="stat-label">Receipts filed</div>
+          <div class="stat-value" id="receipt-count">0</div>
+          <div class="stat-foot">Stored on this device</div>
+        </article>
+        <article class="stat-block stat-review">
+          <div class="stat-label">Needs a look</div>
+          <div class="stat-value" id="review-count">0</div>
+          <div class="stat-foot">Missing a date or total</div>
+        </article>
+        <div class="month-stamp" aria-hidden="true">
+          <span>THE</span><strong>LOCAL</strong><span>LEDGER</span>
+          <svg viewBox="0 0 72 16"><path d="M1 8h70M60 1l11 7-11 7" /></svg>
+        </div>
+      </section>
+
+      <section class="work-area">
+        <div class="receipts-panel">
+          <div class="panel-heading">
+            <div>
+              <div class="heading-overline">YOUR MONEY, SORTED</div>
+              <h2>Receipt inbox <span class="count-chip" id="table-count">0</span></h2>
+            </div>
+            <label class="search-field">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5" /></svg>
+              <input id="search-input" type="search" placeholder="Find a receipt" aria-label="Find a receipt">
+              <kbd>/</kbd>
+            </label>
+          </div>
+          <div class="filter-row" role="group" aria-label="Filter receipts">
+            <button class="filter-button is-active" data-filter="All" type="button">All receipts</button>
+            <button class="filter-button" data-filter="Needs review" type="button">Needs review <span class="filter-count" id="filter-review-count">0</span></button>
+            <button class="filter-button" data-filter="Meals" type="button">Meals</button>
+            <button class="filter-button" data-filter="Travel" type="button">Travel</button>
+            <button class="filter-button" data-filter="Office" type="button">Office</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th scope="col">MERCHANT</th><th scope="col">DATE</th><th scope="col">CATEGORY</th><th scope="col" class="amount-heading">TOTAL</th><th scope="col" aria-label="Actions"></th></tr></thead>
+              <tbody id="receipt-rows"></tbody>
+            </table>
+            <div class="empty-state" id="empty-state" hidden>
+              <span class="empty-icon" aria-hidden="true">↳</span>
+              <h3>Your next receipt goes here.</h3>
+              <p>Scan a photo or add an expense by hand.</p>
+              <button class="text-button" id="empty-upload-button" type="button">Add your first receipt <span>→</span></button>
+            </div>
+          </div>
+          <div class="table-footer"><span id="table-footer-copy">Example records shown</span><button class="text-button" id="clear-button" type="button" hidden>Clear all receipts</button></div>
+        </div>
+
+        <aside class="local-panel">
+          <div class="local-panel-head">
+            <span class="local-symbol" aria-hidden="true"><span></span><span></span><span></span></span>
+            <span>THE PRIVATE SIDE</span>
+            <span class="live-badge" id="connection-badge"><i></i>Checking</span>
+          </div>
+          <h2>Your AI.<br><em>Your machine.</em></h2>
+          <p class="local-copy">Slipstream reads receipts with an open vision model through Ollama. Run both on a machine you control to keep client records there.</p>
+
+          <div class="model-control">
+            <label for="model-select">LOCAL VISION MODEL</label>
+            <select id="model-select" disabled><option>Checking Ollama…</option></select>
+          </div>
+          <div class="model-notice" id="model-notice">
+            <span class="notice-mark" aria-hidden="true">!</span>
+            <span>Start Ollama and pull a vision model to scan. Manual entries work anytime.</span>
+          </div>
+          <button class="copy-command" id="copy-command" type="button" title="Copy model setup command"><span>ollama pull gemma3:4b</span><span class="copy-label">COPY</span></button>
+          <a class="ollama-link" href="https://ollama.com/library/gemma3" target="_blank" rel="noreferrer">About the open model <span aria-hidden="true">↗</span></a>
+
+          <div class="privacy-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4" /></svg>
+            <span><strong>Photos go to your configured Ollama service.</strong> Originals aren't saved after analysis.</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="drop-strip" id="drop-strip" aria-label="Receipt upload area">
+        <div class="drop-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 14v5h14v-5" /></svg>
+        </div>
+        <div class="drop-copy"><strong>Got a receipt? Drop it here.</strong><span>JPG, PNG or WebP · Up to 10 MB each</span></div>
+        <button class="button button-drop" id="drop-upload-button" type="button">Choose photos <span>→</span></button>
+        <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+      </section>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <dialog class="expense-dialog" id="expense-dialog">
+      <form id="expense-form">
+        <div class="dialog-head"><div><p class="eyebrow">KEEP THE DETAILS</p><h2 id="dialog-title">Add an expense</h2></div><button class="icon-button close-dialog" type="button" aria-label="Close">×</button></div>
+        <input id="expense-id" type="hidden">
+        <label class="form-field"><span>Merchant</span><input name="vendor" required maxlength="100" placeholder="e.g. Studio Supply Co."></label>
+        <div class="form-grid">
+          <label class="form-field"><span>Date</span><input name="date" type="date" required></label>
+          <label class="form-field"><span>Total</span><input name="amount" type="number" min="0" step="0.01" required placeholder="0.00"></label>
+        </div>
+        <div class="form-grid">
+          <label class="form-field"><span>Category</span><select name="category"><option>Meals</option><option>Transport</option><option>Office</option><option>Software</option><option>Travel</option><option>Other</option></select></label>
+          <label class="form-field"><span>Tax (optional)</span><input name="tax" type="number" min="0" step="0.01" placeholder="0.00"></label>
+        </div>
+        <label class="form-field"><span>Payment note (optional)</span><input name="payment" maxlength="80" placeholder="e.g. Business card"></label>
+        <div class="dialog-actions"><button class="button button-quiet delete-expense" id="delete-expense-button" type="button" hidden>Delete</button><button class="button button-quiet close-dialog" type="button">Cancel</button><button class="button button-primary" type="submit">Save expense</button></div>
+      </form>
+    </dialog>
+  </body>
+</html>
